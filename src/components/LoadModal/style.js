@@ -35,7 +35,6 @@ export const ContainerModal = styled.div`
 
     > .HeaderContainer {
       width: 100%;
-      border-bottom: solid 1px #ccc;
       padding: 10px;
       padding-top: 0px;
       margin-bottom: 10px;
@@ -49,7 +48,7 @@ export const ContainerModal = styled.div`
         font-size: 1.2em;
       }
 
-      > span {
+      > svg {
         color: #555;
         font-weight: bold;
         font-size: 1.2em;

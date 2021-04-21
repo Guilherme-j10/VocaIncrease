@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import * as Style from './style';
 import ModalLoadText from '../components/LoadModal/index';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import * as Icon from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
 
 const Home = () => {
   
@@ -8,20 +11,32 @@ const Home = () => {
   const [ haveText, setHaveText ] = useState(false);
   const [ showModal, setShowModal ] = useState(false);
   const [ Words, setWords ] = useState([]);
+  const [ Load, setLoad ] = useState(false);
 
-  const HendleSelectWord = (word) => {
-    const dataWord = {
-      word: word,
-      mean: 'sei la po'
-    };
-    if(localStorage.getItem('WordsInformation')){
-      let oldInformation = JSON.parse(localStorage.getItem('WordsInformation'));
-      oldInformation.push(dataWord);
-      localStorage.setItem('WordsInformation', JSON.stringify(oldInformation));
-    }else{
-      localStorage.setItem('WordsInformation', JSON.stringify([dataWord]));
+  const HendleSelectWord = async (word) => {
+    setLoad(true);
+    try {
+      const response = await axios.post('http://localhost:3232/translate', {
+        word: word
+      })
+      if(response.data){
+        const dataWord = {
+          word: word,
+          mean: response.data
+        };
+        if(localStorage.getItem('WordsInformation')){
+          let oldInformation = JSON.parse(localStorage.getItem('WordsInformation'));
+          oldInformation.push(dataWord);
+          localStorage.setItem('WordsInformation', JSON.stringify(oldInformation));
+        }else{
+          localStorage.setItem('WordsInformation', JSON.stringify([dataWord]));
+        }
+        UpdateList();
+        setLoad(false);
+      }
+    } catch (error) {
+      console.log(error);
     }
-    UpdateList();
   }
 
   const UpdateList = () => {
@@ -41,6 +56,13 @@ const Home = () => {
 
   useEffect(() => {
     UpdateList();
+
+    if(localStorage.getItem('TextInput')){
+      setText(localStorage.getItem('TextInput'));
+      setHaveText(true);
+    }else{
+      setHaveText(false);
+    }
   }, [])
 
   return(
@@ -48,6 +70,30 @@ const Home = () => {
       <Style.ContianerGlobal>
         {haveText == true ? (
           <div className="ContainerSpec">
+            <div className="Options">
+              <div className="buttonOptions">
+                <button onClick={() => {
+                  localStorage.removeItem('TextInput');
+                  setHaveText(false);
+                  setText('');
+                }}>
+                  <FontAwesomeIcon icon={Icon.faTrashAlt} />
+                  Remover texto
+                </button>
+                <button onClick={() => {
+                  setShowModal(true);
+                }}>
+                  <FontAwesomeIcon icon={Icon.faPen} />
+                  Editar texto
+                </button>
+              </div>
+              {Load == true ? (
+                <h1>
+                  <FontAwesomeIcon icon={Icon.faCircleNotch} spin />
+                  Buscando palavra...
+                </h1>
+              ) : false}
+            </div>
             <div className="spaceText">
               <p>{(() => {
                 const spliter = Text.split(' ');
@@ -58,14 +104,19 @@ const Home = () => {
                       if(Words.length > 0){
                         for(let s in Words){
                           if(Words[s].word == spliter[k]){
-                            console.log(`${Words[s]} - ${spliter[k]}`);
                             return '#d6411c';
                           }
                         }
                       }else{
                         return false;
                       }
-                    })() }} onClick={() => { HendleSelectWord(spliter[k]); }} >{spliter[k]} </span>
+                    })() }} onClick={() => { 
+                      if(Load == false){
+                        HendleSelectWord(spliter[k]);
+                      }else{
+                        return;
+                      }
+                    }} >{spliter[k]} </span>
                   );
                 }
                 return splash;
@@ -73,9 +124,11 @@ const Home = () => {
             </div>
             <div className="ContainerSticked">
               <div className="Header">
-                <h1>
-                  Palavras marcadas: 
-                </h1>
+                {Words.length > 0 ? (
+                  <h1>
+                    Palavras marcadas: 
+                  </h1>
+                ) : false}
               </div>
               <div className="ContainerContentCards">
                 {Words.map((value, index) => (
@@ -89,7 +142,7 @@ const Home = () => {
                       <button onClick={() => {
                         removeWord(index);
                       }}>
-                        Descartar
+                        <FontAwesomeIcon icon={Icon.faTrashAlt} />
                       </button>
                     </div>
                   </div>

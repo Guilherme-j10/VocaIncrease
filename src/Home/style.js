@@ -23,16 +23,60 @@ export const ContianerGlobal = styled.section`
   > .ContainerSpec {
     width: 100%;
     display: flex;
-    padding: 5% 20%;
+    padding: 3% 20%;
     justify-content: flex-start;
     align-items: center;
     flex-direction: column;
 
+    > .Options {
+      width: 100%;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      > .buttonOptions {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center; 
+
+        > button {
+          background-color: #d6411c;
+          margin-right: 10px;
+          color: #fff;
+          padding: 10px 14px;
+          cursor: pointer;
+          border-radius: 5px;
+          transition: all linear .1s;
+
+          > svg {
+            margin-right: 10px;
+          }
+
+          :active {
+            background-color: #ad2e0e;
+            transform: scale(.9);
+          }
+        }
+      }
+
+      > h1 {
+        margin-right: 30px;
+        color: #ad2e0e;
+        font-size: 1.1em;
+
+        > svg {
+          margin-right: 10px;
+        }
+      }
+    }
+
     > .spaceText {
       width: 100%;
-      height: 250px;
+      max-height: 250px;
       overflow-y: scroll;
       padding-right: 10px;
+      margin-bottom: 20px;
 
       ::-webkit-scrollbar {
         width: 5px;
@@ -147,17 +191,17 @@ export const ContianerGlobal = styled.section`
     align-items: center;
 
     button {
-      background-color: #1d8fdb;
+      background-color: #d6411c;
       color: #fff;
       padding: 10px 12px;
       border-radius: 5px;
       font-size: 1em;
-      box-shadow: 0px 0px 15px 1px #1d8fdb;
+      box-shadow: 0px 0px 15px 1px #d6411c;
       cursor: pointer;
       transition: all linear .1s;
 
       :active {
-        background-color: #156fab;
+        background-color: #ad2e0e;
         transform: scale(.9);
       }
     }
